@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Calculator</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #13bd5a;
+        }
+
+        .calculator {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .result {
+            text-align: left;
+            font-size: 2.5em;
+            padding: 5px;
+            background-color: #23d9ea;
+            border: 1px solid #0fb80f;
+            margin-bottom: 15px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 15px;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #b84818;
+            background-color: #ac0cc5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="result" id="result">0</div>
+    <div class="buttons" id="buttons">
+        <div class="button" onclick="appendNumber('1')">1</div>
+        <div class="button" onclick="appendNumber('2')">2</div>
+        <div class="button" onclick="appendNumber('3')">3</div>
+        <div class="button" onclick="performOperation('+')">+</div>
+        <div class="button" onclick="appendNumber('4')">4</div>
+        <div class="button" onclick="appendNumber('5')">5</div>
+        <div class="button" onclick="appendNumber('6')">6</div>
+        <div class="button" onclick="performOperation('-')">-</div>
+        <div class="button" onclick="appendNumber('7')">7</div>
+        <div class="button" onclick="appendNumber('8')">8</div>
+        <div class="button" onclick="appendNumber('9')">9</div>
+        <div class="button" onclick="performOperation('*')">*</div>
+        <div class="button" onclick="appendNumber('0')">0</div>
+        <div class="button" onclick="performOperation('/')">/</div>
+        <div class="button" onclick="calculate()">=</div>
+        <div class="button" onclick="clearResult()">C</div>
+        <div class="button" onclick="performOperation('%')">%</div>
+        <div class="button" onclick="addToMemory()">M+</div>
+        <div class="button" onclick="subtractFromMemory()">M-</div>
+        <div class="button" onclick="clearMemory()">MC</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        const key = event.key;
+        if (/^\d$/.test(key)) {
+            appendNumber(key);
+        } else if (key === '+' || key === '-' || key === '*' || key === '/' || key === '%') {
+            performOperation(key);
+        } else if (key === 'Enter') {
+            calculate();
+        } else if (key === 'c' || key === 'C') {
+            clearResult();
+        } else if (key === 'm' || key === 'M') {
+            addToMemory();
+        } else if (key === 'n' || key === 'N') {
+            subtractFromMemory();
+        } else if (key === 'k' || key === 'K') {
+            clearMemory();
+        } else {
+            alert('Only Numbers are allowed');
+        }
+    });
+
+    function appendNumber(num) {
+        document.getElementById('result').innerText += num;
+    }
+
+    function performOperation(operator) {
+        const currentResult = document.getElementById('result').innerText;
+        if (currentResult !== '0') {
+            document.getElementById('result').innerText += operator;
+        }
+    }
+
+    function calculate() {
+        const expression = document.getElementById('result').innerText;
+        try {
+            const result = eval(expression);
+            document.getElementById('result').innerText = result;
+        } catch (error) {
+            alert('Invalid expression');
+        }
+    }
+
+    function clearResult() {
+        document.getElementById('result').innerText = '0';
+    }
+
+    function addToMemory() {
+        const currentValue = parseFloat(document.getElementById('result').innerText) || 0;
+        const memoryValue = localStorage.getItem('calculatorMemory') || 0;
+        const newMemoryValue = currentValue + parseFloat(memoryValue);
+        localStorage.setItem('calculatorMemory', newMemoryValue);
+    }
+
+    function subtractFromMemory() {
+        const currentValue = parseFloat(document.getElementById('result').innerText) || 0;
+        const memoryValue = localStorage.getItem('calculatorMemory') || 0;
+        const newMemoryValue = parseFloat(memoryValue) - currentValue;
+        localStorage.setItem('calculatorMemory', newMemoryValue);
+    }
+
+    function clearMemory() {
+        localStorage.removeItem('calculatorMemory');
+    }
+</script>
+
+</body>
+</html>
